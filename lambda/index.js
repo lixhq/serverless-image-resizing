@@ -21,7 +21,7 @@ exports.handler = function(event, context, callback) {
     .then(data => Sharp(data.Body)
       .resize(width, height)
       .max()
-      .toFormat('jpg')
+      .toFormat('jpeg')
       .toBuffer()
     )
     .then(buffer => S3.putObject({
