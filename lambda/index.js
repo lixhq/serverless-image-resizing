@@ -27,7 +27,7 @@ exports.handler = function(event, context, callback) {
     .then(buffer => S3.putObject({
         Body: buffer,
         Bucket: BUCKET,
-        ContentType: 'image/jpg',
+        ContentType: 'image/png',
         CacheControl: CACHE_CONTROL,
         Key: key,
       }).promise()
