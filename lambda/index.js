@@ -8,6 +8,7 @@ const Sharp = require('sharp');
 
 const BUCKET = process.env.BUCKET;
 const URL = process.env.URL;
+const CACHE_CONTROL = process.env.CACHE_CONTROL;
 
 exports.handler = function(event, context, callback) {
   const key = event.queryStringParameters.key;
@@ -19,13 +20,15 @@ exports.handler = function(event, context, callback) {
   S3.getObject({Bucket: BUCKET, Key: originalKey}).promise()
     .then(data => Sharp(data.Body)
       .resize(width, height)
-      .toFormat('png')
+      .max()
+      .toFormat('jpg')
       .toBuffer()
     )
     .then(buffer => S3.putObject({
         Body: buffer,
         Bucket: BUCKET,
-        ContentType: 'image/png',
+        ContentType: 'image/jpg',
+        CacheControl: CACHE_CONTROL,
         Key: key,
       }).promise()
     )
