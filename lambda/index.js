@@ -39,10 +39,7 @@ exports.handler = function(event, context, callback) {
     })
     )
     .catch(err =>  {
-      if(err.errorType === "NoSuchKey") {
-        callback({ errorMessage: "Unable to find key '" + originalKey + "' in bucket", sourceError: err });
-      } else {
-        callback(err)
-      }
+      console.error("Got error while processing '" + originalKey + "' with width " + width + " and height " + height + " passed from " + key);
+      callback(err)
     });
 }
