@@ -25,18 +25,24 @@ exports.handler = function(event, context, callback) {
       .toBuffer()
     )
     .then(buffer => S3.putObject({
-        Body: buffer,
-        Bucket: BUCKET,
-        ContentType: 'image/png',
-        CacheControl: CACHE_CONTROL,
-        Key: key,
-      }).promise()
+      Body: buffer,
+      Bucket: BUCKET,
+      ContentType: 'image/png',
+      CacheControl: CACHE_CONTROL,
+      Key: key,
+    }).promise()
     )
     .then(() => callback(null, {
-        statusCode: '301',
-        headers: {'location': `${URL}/${key}`},
-        body: '',
-      })
+      statusCode: '301',
+      headers: {'location': `${URL}/${key}`},
+      body: '',
+    })
     )
-    .catch(err => callback(err))
+    .catch(err =>  {
+      if(err.errorType === "NoSuchKey") {
+        callback({ errorMessage: "Unable to find key '" + originalKey + "' in bucket", sourceError: err });
+      } else {
+        callback(err)
+      }
+    });
 }
